@@ -1,6 +1,15 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(librwgame LANGUAGES CXX)
+
+include("${PROJECT_SOURCE_DIR}/../cmake_configure.cmake")
+
+find_package(Boost REQUIRED)
+find_package(SDL2 REQUIRED)
+
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/GitSHA1.cpp" @ONLY)
 
-add_library(librwgame STATIC
+add_library(${PROJECT_NAME} STATIC
     GitSHA1.h
     "${CMAKE_CURRENT_BINARY_DIR}/GitSHA1.cpp"
 
@@ -81,18 +90,18 @@ target_link_libraries(librwgame
         imgui::sdl_gl3
     )
 
-add_executable(rwgame
-    main.cpp
-    )
+#add_executable(rwgame
+#    main.cpp
+#    )
 
-target_link_libraries(rwgame
-    PRIVATE
-        librwgame
-    )
+#target_link_libraries(rwgame
+#    PRIVATE
+#        librwgame
+#    )
 
-openrw_target_apply_options(
-    TARGET rwgame
-    CORE
-    COVERAGE
-    INSTALL INSTALL_PDB
-    )
+#openrw_target_apply_options(
+#    TARGET rwgame
+#    CORE
+#    COVERAGE
+#    INSTALL INSTALL_PDB
+#    )
