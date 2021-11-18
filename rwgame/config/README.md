@@ -23,9 +23,9 @@ These are also command line options.
 
 | Name | Type | Default | Path | Category | Argument | Argument mask | Desc |
 |------|------|---------|------|----------|----------|---------------|------|
-gameDataPath | std::string | null | "game.path" | Configuration | "gamedata" | "PATH" | Path of game data
-invertY | bool | false | "input.invert_y" | Input | "invert_y" |  | "Invert the y-axis of the mouse
-width | int | 800 | "window.width" | Window | "width,w" | "WIDTH" | "Game resolution width in pixels"
+gameDataPath | std::string | null | game.path | Config | gamedata | PATH | Path of game data
+invertY | bool | false | input.invert_y | Input | invert_y |  | Invert the y-axis of the mouse
+width | int | 800 | window.width | Window | width,w | WIDTH | Game resolution width in pixels
 
 
 ### Command line arguments
