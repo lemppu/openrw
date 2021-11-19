@@ -1,6 +1,6 @@
 # OpenRW Configuration
 
-OpenRW configuration can be provided either by a command line or a settings
+OpenRW configuration can be provided either by a command line and/or a settings
 file in INI format.
 
 Configuration uses Boost::program-options for parsing, but is independent of
@@ -77,25 +77,25 @@ RWConfig is only used in other components in the module RWGame.
 
 ## Considerations for refactoring
 
-* All of the public functions should be automatically tested with valid, error
+- [ ] All of the public functions should be automatically tested with valid, error
 and corner cases. Start with testing the current functionality before changing
 the code.
 
-* All of the classes are now packed into RWConfig.cpp. They should be
+- [ ] All of the classes are now packed into RWConfig.cpp. They should be
 extracted into their respective translation units and moved to config/ where
 they can also be tested independently.
 
-* Public interfaces in RWConfig.hpp are too crowded. Public access should be
+- [ ] Public interfaces in RWConfig.hpp are too crowded. Public access should be
 limited to only the methods used by another components and rest should be
 hidden inside private classes. Clear interfaces bring clarity.
 
-* Add clear namespaces to show the location of classes and functions. Ie. 
-argumentparser would be "orw::game::config::argParser" etc. 
+- [ ] Add clear namespaces to show the location of classes and functions. For
+example, argument parser would be "orw::game::config::argParser" etc.
 
-* Remove boost::program_options. Write either separate or common objects to
+- [ ] Remove boost::program_options. Write either separate or common objects to
 parse configuration options from ini-file and command line arguments.
 
-* Parsing configuration options from RWConfig.inc is 'smart', but at the
+- [ ] Parsing configuration options from RWConfig.inc is 'smart', but at the
 expense of readability. In the end, options tend to be quite static, so they
 should be defined as more readable and accessible form.
 
