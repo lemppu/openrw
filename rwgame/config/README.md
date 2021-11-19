@@ -39,7 +39,7 @@ hudScale | float | 1.f | game.hud_scale | Window | hud_scale | FACTOR | Scaling 
 gameLanguage | std::string | american | game.language | GAME | language | LANGUAGE | Game Language
 
 
-### Command line arguments
+### Command line options 
 
 | Name | Type | Category | Switch name | Switch argument | Desc |
 |------|------|----------|----------|---------------|------|
