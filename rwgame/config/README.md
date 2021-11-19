@@ -5,7 +5,7 @@ file in INI format.
 
 Configuration uses Boost::program-options for parsing, but is independent of
 other components in RWGame and other modules of OpenRW except RWCore from where
-it loads the debug component from.
+it loads the debug and platform components.
 
 ## Configuration options
 
@@ -45,14 +45,20 @@ gameLanguage | std::string | american | game.language | GAME | language | LANGUA
 
 ## Configuration classes
 
-### RWConfigLayers
+### Public classes
+
+Defined in RWConfig.hpp
+
+#### RWConfigLayers
 
 Template class to store all different configuration layers, the count of whose
 is given as a template parameter in compile time.
 
 Actual layers are stored in an internal public array called "layers". Layer can
 be set by calling a templated function of setLayer with a reference to a layer
-and an index number.
+and an index number. The function is implemented in the header file and there
+is no guard for the index.
+
 
 
 
@@ -71,6 +77,10 @@ RWConfig is only used in other components in the module RWGame.
 
 ## Considerations for refactoring
 
+* All of the public functions should be automatically tested with valid, error
+and corner cases. Start with testing the current functionality before changing
+the code.
+
 * All of the classes are now packed into RWConfig.cpp. They should be
 extracted into their respective translation units and moved to config/ where
 they can also be tested independently.
@@ -79,7 +89,13 @@ they can also be tested independently.
 limited to only the methods used by another components and rest should be
 hidden inside private classes. Clear interfaces bring clarity.
 
-* To parse configuration options from RWConfig.inc is 'smart' but at the
+* Add clear namespaces to show the location of classes and functions. Ie. 
+argumentparser would be "orw::game::config::argParser" etc. 
+
+* Remove boost::program_options. Write either separate or common objects to
+parse configuration options from ini-file and command line arguments.
+
+* Parsing configuration options from RWConfig.inc is 'smart', but at the
 expense of readability. In the end, options tend to be quite static, so they
 should be defined as more readable and accessible form.
 
