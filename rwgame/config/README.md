@@ -7,6 +7,12 @@ Configuration uses `boost::program_options` for parsing, but is independent of
 other components in `RWGame` and other modules of OpenRW except `RWCore`, from
 where it loads the debug and platform components.
 
+Configuration component consists of three files: 
+
+* `RWConfig.hpp`
+* `RWConfig.cpp`
+* `RWConfig.inc`
+
 ## Configuration options
 
 Structs `RWConfigLayer` and `RWArgConfigLayer` contain the actual config
