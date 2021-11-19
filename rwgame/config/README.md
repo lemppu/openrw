@@ -37,8 +37,8 @@ gameLanguage | std::string | american | game.language | GAME | language | LANGUA
 
 | Name | Type | Category | Argument | Argument mask | Desc |
 |------|------|----------|----------|---------------|------|
-configPath | std::string | Config | config,c | PATH | Path of configuration file
-noconfig | bool | Config | noconfig | | Don't load configuration file
+configPath | std::string | Config | config,c  | PATH | Path of configuration file
+noconfig | bool | Config | noconfig  | | Don't load configuration file
 test | bool | Develop | test,t | | Start a new game in a test location
 benchmarkPath | std::string | Develop | benchmark,b | PATH | Run benchmark from file
 newGame | bool | Game | newgame,n | | Start a new game
@@ -79,7 +79,7 @@ file and is generated from `RWConfig.inc` by preprocessor macros.
 
 Defined in `RWConfig.cpp`
 
-## Usage in other components
+## Usage
 
 `RWConfig` is only used in other components in the module `RWGame`.
 
