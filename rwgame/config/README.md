@@ -9,9 +9,9 @@ where it loads the debug and platform components.
 
 Configuration component consists of three files:
 
-* `RWConfig.hpp`
-* `RWConfig.cpp`
-* `RWConfig.inc`
+* `RWConfig.hpp` (262 lines)
+* `RWConfig.cpp` (591 lines)
+* `RWConfig.inc` (25 lines)
 
 ## Configuration options
 
@@ -94,7 +94,7 @@ The class also has public `std::map<std::string, std::string> unknown`.
 
 #### RWArgumentParser
 
-Class to parse command line arguments. 
+Class to parse command line arguments.
 
 ##### Definition
 
@@ -155,6 +155,55 @@ Internal public class for `RWConfigParser` and a _friend_ class to it.
 ##### Definition
 
 The class has both public and private members defined in two separate places.
+
+There is public enum `ErrorType` for configuration errors:
+
+| Enum | Value |
+|------|-------|
+UNINITIALIZED | 0
+GOOD | 1
+INVALDIINPUTFILE | 2
+INVALIDCONTENT | 3
+INVALIDOUTPUTFILE | 4
+
+Method `type()` returns error status of the instance.
+
+Method `getKeysInvalidData()` returns keys with invalid data.
+
+`markGood()` can be called to mark the result instance as valid.
+
+`failInputFile()` can be called with a line number and message in case of
+error in the input file.
+
+`failInvalidData()` can be called with a key to indicate an invalid key.
+
+`failOutputFile()` can be calles when there is an error in writing tu the
+output.
+
+`isValid()` boolean to check whether the result is valid.
+
+`what()` returns a string of the error state in the instance.
+
+`setUnknownData()` can replace unknown key/value pairs.
+
+`getUnknownData()` returns all of the unknown key/value pairs.
+
+Private constructor `ParseResult(std::string, std::string)` can store
+the issues from the parsing of config file.
+
+Private enum `m_result` stores the type of the failure.
+
+Private strings `m_inputfilename` and `m_outputfilename` store their
+respective file names.
+
+Private member `m_line` stores a line number of the failure in the file.
+
+Private string `m_message` stores the description of the failure.
+
+Private vector `m_keys_invalidData` stores all the keys containing invalid
+data.
+
+Private map `m_unknownData` stores unknown keys and their associated data.
 
 ---
 
