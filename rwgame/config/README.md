@@ -63,7 +63,7 @@ Template class to store all different configuration layers, the count of whose
 is given as a template parameter in compile time.
 
 Actual layers are stored in an internal public array `layers`. Layer can
-be set by calling a templated function of setLayer with a reference to a layer
+be set by calling a templated function `setLayer` with a reference to a layer
 and an index number. The function is implemented in the header file and there
 is no guard for the index.
 
@@ -254,7 +254,7 @@ constructor before starting the game loop.
 which then builds is member `config` by calling its protected method
 `buildConfig()`.
 
-`GameBase` also provides public method `getConfig()' to get the private member
+`GameBase` also provides public method `getConfig()` to get the private member
 `config`.
 
 `GameBase::buildConfig()` is a 49 line function that takes `RWArgConfigLayer`
@@ -287,6 +287,13 @@ they can also be tested independently.
 - [ ] Public interfaces in `RWConfig.hpp` are too crowded. Public access should
 be limited to only the methods used by another components and rest should be
 hidden inside private classes. Clear interfaces bring clarity.
+
+- [ ] The main logic of building the configuration layers happens now in the
+class `GameBase`, but there is no reason why all of the building logic should
+not happen in the component `config`. It could take command line args as a
+constructor parameter and then provide a single interface of config for the
+clients. All the details and configuration logic should be handled
+in-component.
 
 - [ ] Add clear namespaces to show the location of classes and functions. For
 example, argument parser would be `orw::game::config::argParser` etc.
