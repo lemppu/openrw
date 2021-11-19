@@ -52,7 +52,7 @@ is given as a template parameter in compile time.
 
 Actual layers are stored in an internal public array called "layers". Layer can
 be set by calling a templated function of setLayer with a reference to a layer
-and an index number. 
+and an index number.
 
 
 
@@ -69,4 +69,17 @@ generated from RWConfig.inc by preprocessor macros.
 
 RWConfig is only used in other components in the module RWGame.
 
+## Considerations for refactoring
+
+* All of the classes are now packed into RWConfig.cpp. They should be
+extracted into their respective translation units and moved to config/ where
+they can also be tested independently.
+
+* Public interfaces in RWConfig.hpp are too crowded. Public access should be
+limited to only the methods used by another components and rest should be
+hidden inside private classes. Clear interfaces bring clarity.
+
+* To parse configuration options from RWConfig.inc is 'smart' but at the
+expense of readability. In the end, options tend to be quite static, so they
+should be defined as more readable and accessible form.
 
