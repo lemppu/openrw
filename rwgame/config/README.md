@@ -90,6 +90,9 @@ LAYER_ARGUMENT | 1
 LAYER_CONFIGFILE | 2
 LAYER_DEFAULT | 3
 
+Even though LAYER_USER is defined, it's never used. *NOTE:* _should there be
+any difference between USER and CONFIGFILE?_
+
 The class also has public `std::map<std::string, std::string> unknown`.
 
 #### RWArgumentParser
@@ -213,9 +216,63 @@ Defined in `RWConfig.cpp`
 
 ## Usage
 
-`RWConfig` is only used by other components in the module `RWGame`.
+`RWConfig` is only used by other components in the module `RWGame`. However,
+there is a bit of work to find out what components exactly use the config,
+because `RWConfig.hpp` is included in `GameBase.hpp`, which is then included
+by `RWGame.hpp` which is included by several components, so there's some
+digging to find out all usage.
 
-_Use cases to be listed here._
+### main.cpp
+
+At the beginning of program entry, the main function initializes
+`RWArgumentParser`, checks its validity and passes it to the `RWGame`
+constructor before starting the game loop.
+
+```c++
+
+    RWArgumentParser argParser;
+    auto argLayerOpt = argParser.parseArguments(argc, argv);
+    if (!argLayerOpt.has_value()) {
+        argParser.printHelp(std::cerr);
+        return 1;
+    }
+    if (argLayerOpt->help) {
+        argParser.printHelp(std::cout);
+        return 0;
+    }
+...
+    try {
+        RWGame game(logger, argLayerOpt);
+
+        return game.run();
+    }
+```
+
+### GameBase.cpp
+
+`RWArgConfigLayer` is passed as an argument to the `GameBase` constructor,
+which then builds is member `config` by calling its protected method
+`buildConfig()`.
+
+`GameBase` also provides public method `getConfig()' to get the private member
+`config`.
+
+`GameBase::buildConfig()` is a 49 line function that takes `RWArgConfigLayer`
+as an argument.
+
+If given `RWArgConfigLayer` has value, it will be a parameter to
+`config.setLayer()` along with enum LAYER_ARGUMENT.
+
+Default layer will be constructed by calling the free function
+`buildDefaultConfigLayer()` and set to config by calling `setLayer()` with
+LAYER_DEFAULT as a second parameter.
+
+### RWGame.cpp
+
+
+### states/DebugState.cpp
+
+### states/IngameState.cpp
 
 ## TODO
 
