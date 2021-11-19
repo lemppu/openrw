@@ -1,7 +1,7 @@
 # OpenRW Configuration
 
-OpenRW configuration can be provided either by a command line and/or a settings
-file in INI format.
+OpenRW configuration can be provided by a command line and/or a settings file
+in INI format.
 
 Configuration uses `boost::program_options` for parsing, but is independent of
 other components in `RWGame` and other modules of OpenRW except `RWCore`, from
