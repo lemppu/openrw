@@ -7,7 +7,7 @@ Configuration uses `boost::program_options` for parsing, but is independent of
 other components in `RWGame` and other modules of OpenRW except `RWCore`, from
 where it loads the debug and platform components.
 
-Configuration component consists of three files: 
+Configuration component consists of three files:
 
 * `RWConfig.hpp`
 * `RWConfig.cpp`
@@ -36,10 +36,10 @@ width | int | 800 | window.width | Window | width,w | WIDTH | Game resolution wi
 height | int | 600 | window.height | Window | height,h | HEIGHT | Game resolution height in pixels
 fullscreen | bool | false | window.fullscreen | Window | fullscreen,f | | Enable fullscreen mode
 hudScale | float | 1.f | game.hud_scale | Window | hud_scale | FACTOR | Scaling factor of the HUD
-gameLanguage | std::string | american | game.language | GAME | language | LANGUAGE | Game Language
+gameLanguage | std::string | american | game.language | Game | language | LANGUAGE | Game Language
 
 
-### Command line options 
+### Command line options
 
 | Name | Type | Category | Switch name | Switch argument | Desc |
 |------|------|----------|----------|---------------|------|
@@ -77,7 +77,7 @@ file and is generated from `RWConfig.inc` by preprocessor macros.
 
 #### RWConfig
 
-Class that implements `RWConfigLayers` with four separate layers. 
+Class that implements `RWConfigLayers` with four separate layers.
 
 The layers are defined as an enum inside the class:
 
@@ -92,7 +92,33 @@ The class also has public `std::map<std::string, std::string> unknown`.
 
 #### RWArgumentParser
 
+Class to parse command line arguments. It has private member `desc` of
+type `boost::program_options::options_description`.
+
+There is an internal enum `Category`:
+
+| Enum | Value |
+|------|-------|
+CONFIG | 0
+GAME | 1
+INPUT | 2
+WINDOW | 3
+DEVELOP | 4
+GENERAL | 5
+
+The class has parameterless constructor, a copy constructor and a move
+constructor. 
+
+Help can be printed with method `printHelp()` to the output stream provided
+by user.
+
+Actual parsing is done by calling method
+`parseArguments(int argc, const char **argv)` that returns std::optional of
+type `RWArgConfigLayer`.
+
 #### RWConfigParser
+
+---
 
 ### Private classes
 
