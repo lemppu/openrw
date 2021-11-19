@@ -13,7 +13,7 @@ Structs `RWConfigLayer` and `RWArgConfigLayer` contain the actual config
 options that are generated from file `RWConfig.inc` by preprocessor macros.
 
 `RWArgConfigLayer` is an extension of `RWConfigLayer`, which means that options
-can be either for both command line and config file, or only for command
+can be either from both command line and config file, or only for command
 line.
 
 Default config layer can be made by free function `buildDefaultConfigLayer()`.
