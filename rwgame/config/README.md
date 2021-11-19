@@ -56,7 +56,7 @@ Defined in `RWConfig.hpp`
 Template class to store all different configuration layers, the count of whose
 is given as a template parameter in compile time.
 
-Actual layers are stored in an internal public array called "layers". Layer can
+Actual layers are stored in an internal public array `layers`. Layer can
 be set by calling a templated function of setLayer with a reference to a layer
 and an index number. The function is implemented in the header file and there
 is no guard for the index.
