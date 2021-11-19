@@ -71,6 +71,19 @@ file and is generated from `RWConfig.inc` by preprocessor macros.
 
 #### RWConfig
 
+Class that implements `RWConfigLayers` with four separate layers. 
+
+The layers are defined as an enum inside the class:
+
+| Enum | Value |
+|------|-------|
+LAYER_USER | 0
+LAYER_ARGUMENT | 1
+LAYER_CONFIGFILE | 2
+LAYER_DEFAULT | 3
+
+The class also has public `std::map<std::string, std::string> unknown`.
+
 #### RWArgumentParser
 
 #### RWConfigParser
