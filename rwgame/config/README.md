@@ -4,7 +4,7 @@ OpenRW configuration can be provided either by a command line or a settings
 file in INI format.
 
 Configuration uses Boost::program-options for parsing, but is independent of
-other components in RWGame and other modules of OpenRW.
+other components in RWGame and other modules of OpenRW except RWCore from where it loads the debug component from.
 
 ## Configuration options
 
@@ -45,3 +45,9 @@ width | int | 800 | window.width | Window | width,w | WIDTH | Game resolution wi
       - extends RWConfigLayers
  - RWArgumentParser
  - RWConfigParser
+
+## Usage in other components
+
+RWConfig is only used in other components in the module RWGame.
+
+
