@@ -22,7 +22,7 @@ Default config layer can be made by free function `buildDefaultConfigLayer()`.
 
 These are also command line options.
 
-| Name | Type | Default | Path | Category | Argument | Argument mask | Desc |
+| Name | Type | Default | Path | Category | Switch name | Switch argument | Desc |
 |------|------|---------|------|----------|----------|---------------|------|
 gameDataPath | std::string | | game.path | Config | gamedata | PATH | Path of game data
 invertY | bool | false | input.invert_y | Input | invert_y |  | Invert the y-axis of the mouse
@@ -35,7 +35,7 @@ gameLanguage | std::string | american | game.language | GAME | language | LANGUA
 
 ### Command line arguments
 
-| Name | Type | Category | Argument | Argument mask | Desc |
+| Name | Type | Category | Switch name | Switch argument | Desc |
 |------|------|----------|----------|---------------|------|
 configPath | std::string | Config | config,c  | PATH | Path of configuration file
 noconfig | bool | Config | noconfig  | | Don't load configuration file
