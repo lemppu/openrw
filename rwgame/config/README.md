@@ -79,6 +79,8 @@ file and is generated from `RWConfig.inc` by preprocessor macros.
 
 Class that implements `RWConfigLayers` with four separate layers.
 
+##### Definition
+
 The layers are defined as an enum inside the class:
 
 | Enum | Value |
@@ -92,8 +94,12 @@ The class also has public `std::map<std::string, std::string> unknown`.
 
 #### RWArgumentParser
 
-Class to parse command line arguments. It has private member `desc` of
-type `boost::program_options::options_description`.
+Class to parse command line arguments. 
+
+##### Definition
+
+The class has private member `desc` of type
+`boost::program_options::options_description`.
 
 There is an internal enum `Category`:
 
@@ -116,24 +122,39 @@ Actual parsing is done by calling method
 `parseArguments(int argc, const char **argv)` that returns std::optional of
 type `RWArgConfigLayer`.
 
+##### Implementation
+
+TODO
+
 #### RWConfigParser
 
-Class to parse configuration file. 
+##### Definition
 
-It provides a static function `getDefaultConfigPath()` to read file from 
-default location. 
+Class to parse configuration file.
+
+It provides a static function `getDefaultConfigPath()` to read file from
+default location.
 
 Function `loadFile()` takes an argument for `std::filesystem::path` and
 returns a tuple of `RWConfigLayer` and `RWConfigParser::ParseResult`.
 
-There are also two methods for `saveFile()` to save given layer to given 
-file. Another of them has also a parameter for 
+There are also two methods for `saveFile()` to save given layer to given
+file. Another of them has also a parameter for
 `std::map<std::string, std::string>` called `extra`.
 
 Given layer can be made into string by method `layerToString()`.
 
-##### ParseResult
+##### Implementation
 
+TODO
+
+#### ParseResult
+
+Internal public class for `RWConfigParser` and a _friend_ class to it.
+
+##### Definition
+
+The class has both public and private members defined in two separate places.
 
 ---
 
