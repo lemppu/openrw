@@ -90,7 +90,7 @@ LAYER_ARGUMENT | 1
 LAYER_CONFIGFILE | 2
 LAYER_DEFAULT | 3
 
-Even though LAYER_USER is defined, it's never used. *NOTE:* _should there be
+Even though LAYER_USER is defined, it's never used. **NOTE:** _should there be
 any difference between USER and CONFIGFILE?_
 
 The class also has public `std::map<std::string, std::string> unknown`.
@@ -266,6 +266,20 @@ If given `RWArgConfigLayer` has value, it will be a parameter to
 Default layer will be constructed by calling the free function
 `buildDefaultConfigLayer()` and set to config by calling `setLayer()` with
 LAYER_DEFAULT as a second parameter.
+
+If the config file path is not set by command line arguments, it will be read
+from default location. The filename is hardcoded to be `openrw.ini`.
+
+If the `noconfig` command-line argument is not given, `RWConfigParser` will
+load the file from the config path. The validity of `parseResult` will be
+examined, after which unknown data will be stored to config and `setLayer()`
+called with the parsed layer and LAYER_CONFIGFILE.
+
+If there are missing keys, the function will collect them to a string by
+calling `config.missingKeys()`. Missing keys will be written to the logger in
+addition of default settings, with a recommendation to adapt them to the
+config file. After this the program will throw runtime error with the recently
+built error string.
 
 ### RWGame.cpp
 
