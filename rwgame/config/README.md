@@ -107,7 +107,7 @@ DEVELOP | 4
 GENERAL | 5
 
 The class has parameterless constructor, a copy constructor and a move
-constructor. 
+constructor.
 
 Help can be printed with method `printHelp()` to the output stream provided
 by user.
@@ -118,6 +118,23 @@ type `RWArgConfigLayer`.
 
 #### RWConfigParser
 
+Class to parse configuration file. 
+
+It provides a static function `getDefaultConfigPath()` to read file from 
+default location. 
+
+Function `loadFile()` takes an argument for `std::filesystem::path` and
+returns a tuple of `RWConfigLayer` and `RWConfigParser::ParseResult`.
+
+There are also two methods for `saveFile()` to save given layer to given 
+file. Another of them has also a parameter for 
+`std::map<std::string, std::string>` called `extra`.
+
+Given layer can be made into string by method `layerToString()`.
+
+##### ParseResult
+
+
 ---
 
 ### Private classes
@@ -126,7 +143,7 @@ Defined in `RWConfig.cpp`
 
 ## Usage
 
-`RWConfig` is only used in other components in the module `RWGame`.
+`RWConfig` is only used by other components in the module `RWGame`.
 
 _Use cases to be listed here._
 

@@ -3,6 +3,7 @@ documentation/
 *.kdev4
 *~
 *swp
+*.o
 *.user*
 .DS_Store
 .vscode/
