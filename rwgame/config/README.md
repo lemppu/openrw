@@ -24,11 +24,11 @@ These are also command line options.
 
 | Name | Type | Default | Path | Category | Argument | Argument mask | Desc |
 |------|------|---------|------|----------|----------|---------------|------|
-gameDataPath | std::string | null | game.path | Config | gamedata | PATH | Path of game data
+gameDataPath | std::string | | game.path | Config | gamedata | PATH | Path of game data
 invertY | bool | false | input.invert_y | Input | invert_y |  | Invert the y-axis of the mouse
 width | int | 800 | window.width | Window | width,w | WIDTH | Game resolution width in pixels
 height | int | 600 | window.height | Window | height,h | HEIGHT | Game resolution height in pixels
-fullscreen | bool | false | window.fullscreen | Window | fullscreen,f | null | Enable fullscreen mode
+fullscreen | bool | false | window.fullscreen | Window | fullscreen,f | | Enable fullscreen mode
 hudScale | float | 1.f | game.hud_scale | Window | hud_scale | FACTOR | Scaling factor of the HUD
 gameLanguage | std::string | american | game.language | GAME | language | LANGUAGE | Game Language
 
