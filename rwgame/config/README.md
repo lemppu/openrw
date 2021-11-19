@@ -38,16 +38,11 @@ gameLanguage | std::string | american | game.language | GAME | language | LANGUA
 | Name | Type | Category | Argument | Argument mask | Desc |
 |------|------|----------|----------|---------------|------|
 
-### Command line switches
-
-| Name | Type | Category | Argument | Argument mask | Desc |
-|------|------|----------|----------|---------------|------|
-
 ## Configuration classes
 
 ### Public classes
 
-Defined in RWConfig.hpp
+Defined in `RWConfig.hpp`
 
 #### RWConfigLayers
 
@@ -58,6 +53,7 @@ Actual layers are stored in an internal public array called "layers". Layer can
 be set by calling a templated function of setLayer with a reference to a layer
 and an index number. The function is implemented in the header file and there
 is no guard for the index.
+
 
 
 
