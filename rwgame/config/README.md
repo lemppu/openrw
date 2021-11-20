@@ -204,7 +204,7 @@ Private map `m_unknownData` stores unknown keys and their associated data.
 
 ## Usage
 
-`RWConfig` is only used by other components in the module `RWGame`. 
+`RWConfig` is only used by other components in the module `RWGame`.
 
 ### main.cpp
 
