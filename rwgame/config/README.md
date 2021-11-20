@@ -283,6 +283,7 @@ built error string.
 
 ### RWGame.cpp
 
+Calls individual values of the member `config` of the parent class.
 
 ### states/DebugState.cpp
 
@@ -297,6 +298,10 @@ the code.
 - [ ] All of the classes are now packed into `RWConfig.cpp`. They should be
 extracted into their respective translation units and moved to config/ where
 they can also be tested independently.
+
+- [ ] Class `GameBase` is the parent class of `RWGame`, but it is hard to figure
+out other inheritors for it, so there is no need for inheritance here, and
+there should be only one game class?
 
 - [ ] Public interfaces in `RWConfig.hpp` are too crowded. Public access should
 be limited to only the methods used by another components and rest should be
