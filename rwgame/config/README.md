@@ -125,10 +125,6 @@ Actual parsing is done by calling method
 `parseArguments(int argc, const char **argv)` that returns std::optional of
 type `RWArgConfigLayer`.
 
-##### Implementation
-
-TODO
-
 #### RWConfigParser
 
 ##### Definition
@@ -146,10 +142,6 @@ file. Another of them has also a parameter for
 `std::map<std::string, std::string>` called `extra`.
 
 Given layer can be made into string by method `layerToString()`.
-
-##### Implementation
-
-TODO
 
 #### ParseResult
 
@@ -210,10 +202,6 @@ Private map `m_unknownData` stores unknown keys and their associated data.
 
 ---
 
-### Private classes
-
-Defined in `RWConfig.cpp`
-
 ## Usage
 
 `RWConfig` is only used by other components in the module `RWGame`. However,
@@ -257,6 +245,9 @@ which then builds is member `config` by calling its protected method
 `GameBase` also provides public method `getConfig()` to get the private member
 `config`.
 
+The constructor sets the fullscreen switch and window dimensions from the
+config.
+
 `GameBase::buildConfig()` is a 49 line function that takes `RWArgConfigLayer`
 as an argument.
 
@@ -283,11 +274,19 @@ built error string.
 
 ### RWGame.cpp
 
-Calls individual values of the member `config` of the parent class.
+Calls individual values of the member `config` of the parent class:
+
+* gamedataPath()
+* hudScale()
+* gameLanguage()
 
 ### states/DebugState.cpp
 
+Mouse y-axis inversion is read from config to a member variable.
+
 ### states/IngameState.cpp
+
+Mouse y-axis inversion is read from config to a member variable.
 
 ## TODO
 
@@ -304,21 +303,23 @@ out other inheritors for it, so there is no need for inheritance here, and
 there should be only one game class?
 
 - [ ] Public interfaces in `RWConfig.hpp` are too crowded. Public access should
-be limited to only the methods used by another components and rest should be
+be limited to only the methods used by other components and rest should be
 hidden inside private classes. Clear interfaces bring clarity.
 
 - [ ] The main logic of building the configuration layers happens now in the
 class `GameBase`, but there is no reason why all of the building logic should
 not happen in the component `config`. It could take command line args as a
 constructor parameter and then provide a single interface of config for the
-clients. All the details and configuration logic should be handled
-in-component.
+game. All the details and configuration logic should be handled in-component.
+The game should just request a config and go with it.
 
 - [ ] Add clear namespaces to show the location of classes and functions. For
 example, argument parser would be `orw::game::config::argParser` etc.
 
 - [ ] Remove boost::program_options. Write either separate or common objects to
-parse configuration options from ini-file and command line arguments.
+parse configuration options from ini-file and command line arguments, or use
+ready-made libraries. Since the task is quite trivial, it might be better to
+reduce dependencies and write new ones from the scratch?
 
 - [ ] Parsing configuration options from `RWConfig.inc` is 'smart', but at the
 expense of readability. In the end, options tend to be quite static, so they
