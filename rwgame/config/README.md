@@ -1,7 +1,7 @@
 # OpenRW Configuration
 
 A rewrite of OpenRW Configuration. For the workings of previous version, see
-<BACKGROUND.md>.
+[BACKGROUND](BACKGROUND.md).
 
 The first target is to achieve the functionality of the previous version:
 
@@ -18,5 +18,5 @@ Upcoming features in planning:
 values with Configurator and set a callback, that will send those values back
 when they are changed from outside. 
 
-    * This makes it possible to make a runtime console, that can change values
+    * This makes it possible to have a runtime console, that can change values
 immediately during the came, which could be a big advantage in development.
