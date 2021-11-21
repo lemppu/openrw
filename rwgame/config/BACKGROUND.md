@@ -1,4 +1,4 @@
-# OpenRW Configuration
+# Previous workings of OpenRW Configuration
 
 OpenRW configuration can be provided by a command line and/or a settings file
 in INI format.
