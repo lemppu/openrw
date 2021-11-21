@@ -9,19 +9,21 @@
 
 namespace orw::cfg {
 
+using DataMap = std::map<std::string, ConfigValue>;
+
 class Core {
 
 public:
 
     Core(int argc, char **argv);
 
-    std::optional<Value> GetValue(std::string key);
+    std::optional<ConfigValue> GetValue(std::string key);
 
     //Result SetValue(std::string key, Value value);
 
 private:
 
-    std::map<std::string, Value> data_;
+    DataMap data_;
 
 };
 

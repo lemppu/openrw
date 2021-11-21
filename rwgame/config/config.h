@@ -14,27 +14,27 @@
 #include <optional>
 #include <variant>
 
-namespace orw {
+namespace orw::cfg {
 
-namespace cfg {
+enum class Result {
+    kOk,
+    kFail,
+    kNoSuchKey
+};
 
-    enum class Result {
-        kOk,
-        kFail,
-        kNoSuchKey
-    };
+// Just out of the readability we alias the std::variant to simple cfg::Value,
+// that will accept all of the types used in the configuration.
+//
+// Add new types as needed.
+using ConfigValue = std::variant<std::string, float, int, bool>;
 
-    using Value = std::variant<std::string, float, int, bool>;
-
-    // We use the "Pimpl idiom" to hide the implementation details, so that
-    // there would be less dependencies for clients, and more freedom to
-    // develop component internals without breaking userspace.
-    //
-    // Here we forward declare the class to be used in private definitions 
-    // of Configurator
-    class Core;
-
-} // namespace cfg
+// We use the "Pimpl idiom" to hide the implementation details, so that there
+// would be less dependencies for clients, and more freedom to develop
+// component internals without breaking userspace.
+//
+// Here we forward declare the class to be used in private definitions of 
+// Configurator
+class Core;
 
 /*
  * Configurator manages all of the configurable settings of the game.
@@ -58,15 +58,15 @@ public:
     Configurator(int argc, char **argv);
     ~Configurator();
 
-    std::optional<cfg::Value> GetValue(std::string key);
-    // cfg::Result SetValue(std::string key, cfg::Value value);
+    std::optional<ConfigValue> GetValue(std::string key);
+    // Result SetValue(std::string key, ConfigValue value);
 
 private:
 
-    std::unique_ptr<cfg::Core> core_;
+    std::unique_ptr<Core> core_;
 
 };
 
-} // namespace orw
+} // namespace orw::cfg
 
 #endif // OPENRW_GAME_CONFIG_H_
