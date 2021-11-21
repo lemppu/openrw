@@ -24,16 +24,6 @@ namespace cfg {
         kNoSuchKey
     };
 
-    struct GameConfig {
-        std::string data_path;
-        bool invert_y;
-        int width;
-        int height;
-        bool fullscreen;
-        float hud_scale;
-        std::string language;
-    };
-
     using Value = std::variant<std::string, float, int, bool>;
 
     // We use the "Pimpl idiom" to hide the implementation details, so that
@@ -64,18 +54,17 @@ namespace cfg {
 class Configurator {
 
 public:
+
     Configurator(int argc, char **argv);
+    ~Configurator();
 
     std::optional<cfg::Value> GetValue(std::string key);
     // cfg::Result SetValue(std::string key, cfg::Value value);
 
-    // cfg::Result RegisterClient(std::string name, struct IValueSet valueset, func *callback);
-    // cfg::Result UnregisterClient(std::string name);
-
 private:
+
     std::unique_ptr<cfg::Core> core_;
 
-    struct cfg::GameConfig config_; // TODO: Get rid of this
 };
 
 } // namespace orw

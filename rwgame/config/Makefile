@@ -17,10 +17,8 @@ config.o: config.cc
 
 clean:
 	rm *.o
-	rm config_test
+	rm testrunner
 
 check:
-	$(CC) $(CXXFLAGS) config_test.cc config.o $(LINK_TEST) -o config_test
-	./config_test
-	$(CC) $(CXXFLAGS) core_test.cc core.o $(LINK_TEST) -o core_test
-	./core_test
+	$(CC) $(CXXFLAGS) core.o config.o core_test.cc config_test.cc testrunner.cc $(LINK_TEST) -o testrunner
+	./testrunner
