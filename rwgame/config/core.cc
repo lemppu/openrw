@@ -8,11 +8,6 @@
 
 namespace orw::cfg {
 
-static void InsertDefaults(DataMap *data) {
-    data->insert({"game.path","$HOME/.local/openrw/data"});
-    data->insert({"input.invert_y", false});
-}
-
 Core::Core(int argc, char **argv) {
     // Just do something with these before iplementing argument parser that
     // will use them.
@@ -20,7 +15,12 @@ Core::Core(int argc, char **argv) {
     argc++;
     // ----
 
-    InsertDefaults(&data_);
+    this->InsertDefaults();
+}
+
+void Core::InsertDefaults() {
+    data_.insert({"game.path","$HOME/.local/openrw/data"});
+    data_.insert({"input.invert_y", false});
 }
 
 std::optional<ConfigValue> Core::GetValue(std::string key) {

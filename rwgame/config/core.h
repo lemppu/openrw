@@ -22,7 +22,7 @@ public:
     //Result SetValue(std::string key, Value value);
 
 private:
-
+    void InsertDefaults();
     DataMap data_;
 
 };
