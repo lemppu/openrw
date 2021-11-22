@@ -59,7 +59,7 @@ public:
     ~Configurator();
 
     std::optional<ConfigValue> GetValue(std::string key);
-    // Result SetValue(std::string key, ConfigValue value);
+    Result SetValue(std::string key, ConfigValue value);
 
 private:
 

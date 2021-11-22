@@ -21,6 +21,7 @@ TEST_GROUP(ConfigDefaults) {
     void teardown() {
         delete config;
     }
+
 };
 
 TEST(ConfigDefaults, DataPathValid) {
@@ -28,7 +29,8 @@ TEST(ConfigDefaults, DataPathValid) {
     std::optional<cfg::ConfigValue> dataPath = config->GetValue("game.path");
 
     CHECK(dataPath.has_value());
-    CHECK(dataPath.value() == cfg::ConfigValue("$HOME/.local/openrw/data"));
+    std::string ref_value = std::string("$HOME/.local/openrw/data");
+    CHECK(dataPath.value() == cfg::ConfigValue(ref_value));
 
 }
 
@@ -57,6 +59,20 @@ TEST(ConfigDefaults, InvertMouseValid) {
     CHECK(option.has_value());
     CHECK(option.value() == cfg::ConfigValue(false));
     
+}
+
+TEST(ConfigDefaults, SetValue) {
+
+    cfg::Result res = config->SetValue("testkey", 123);
+
+    CHECK(res == cfg::Result::kOk);
+    CHECK(config->GetValue("testkey") == cfg::ConfigValue(123));
+
+    res = config->SetValue("testkey", 456);
+
+    CHECK(res == cfg::Result::kOk);
+    CHECK(config->GetValue("testkey") == cfg::ConfigValue(456));
+
 }
 
 } // namespace orw

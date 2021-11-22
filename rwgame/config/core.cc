@@ -1,49 +1,71 @@
 #include "core.h"
 #include "config.h"
+#include "argparser.h"
 
 #include <string>
 #include <map>
 #include <optional>
 #include <memory>
+#include <variant>
 
 namespace orw::cfg {
 
+// TODO: It should be guaranteed that default has the value of game.path,
+// but if for some reason it does not happen, even though it is set in 
+// InsertDefaults(), maybe we should throw runtime exception, or that would
+// just be some extra clutter? 
+static std::string GetConfPath(std::optional<ConfigValue> arg_path,
+                               ConfigMap defaults) {
+
+    if (arg_path.has_value())
+        return std::get<std::string>(arg_path.value());
+    else
+        return std::get<std::string>(defaults.find("game.path")->second);
+
+}
+
 Core::Core(int argc, char **argv) {
-    // Just do something with these before iplementing argument parser that
-    // will use them.
-    argv[0]++;
-    argc++;
-    // ----
 
     this->InsertDefaults();
+
+    ArgParser args(argc, argv);
+
+    std::string conf_path = GetConfPath(args.GetValue("game.path"), data_);
+    
+    // IniParser ini(conf_path);
+
+    // data_ = MergeConfig(ini,data_);
+    // data_ = MergeConfig(args,data_);
 }
 
 void Core::InsertDefaults() {
-    data_.insert({"game.path","$HOME/.local/openrw/data"});
+
+    data_.insert({"game.path",std::string("$HOME/.local/openrw/data")});
     data_.insert({"input.invert_y", false});
+
 }
 
 std::optional<ConfigValue> Core::GetValue(std::string key) {
 
-    for (std::map<std::string, ConfigValue>::iterator it = data_.begin();
-         it != data_.end(); ++it) {
+    for (ConfigMap::iterator it = data_.begin(); it != data_.end(); ++it) 
         if (it->first == key)
             return {it->second};
-    }
-
+    
     return {};
 
 }
 
 Result Core::SetValue(std::string key, ConfigValue value) {
 
-    DataMap::iterator it = data_.find(key);
+    ConfigMap::iterator it = data_.find(key);
+
     if (it != data_.end())
         it->second = value;
     else
         data_.insert({key, value});
 
     return Result::kOk;
+
 }
 
 } // namespace orw::cfg

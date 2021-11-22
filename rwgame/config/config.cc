@@ -22,4 +22,8 @@ std::optional<ConfigValue> Configurator::GetValue(std::string key) {
     return core_->GetValue(key);
 }
 
+Result Configurator::SetValue(std::string key, ConfigValue value) {
+    return core_->SetValue(key, value);
+}
+
 } // namespace orw
