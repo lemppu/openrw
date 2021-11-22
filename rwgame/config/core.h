@@ -19,7 +19,7 @@ public:
 
     std::optional<ConfigValue> GetValue(std::string key);
 
-    //Result SetValue(std::string key, Value value);
+    Result SetValue(std::string key, ConfigValue value);
 
 private:
     void InsertDefaults();

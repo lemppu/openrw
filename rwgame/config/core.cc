@@ -11,7 +11,7 @@ namespace orw::cfg {
 Core::Core(int argc, char **argv) {
     // Just do something with these before iplementing argument parser that
     // will use them.
-    argv[0]++; 
+    argv[0]++;
     argc++;
     // ----
 
@@ -33,6 +33,17 @@ std::optional<ConfigValue> Core::GetValue(std::string key) {
 
     return {};
 
+}
+
+Result Core::SetValue(std::string key, ConfigValue value) {
+
+    DataMap::iterator it = data_.find(key);
+    if (it != data_.end())
+        it->second = value;
+    else
+        data_.insert({key, value});
+
+    return Result::kOk;
 }
 
 } // namespace orw::cfg
