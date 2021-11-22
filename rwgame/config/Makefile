@@ -5,37 +5,41 @@ CXXFLAGS = -g -std=c++17\
            -Wextra\
            --coverage
 
-NOMAIN = -c
+NOLINK = -c
 
 LINK_TEST = -lCppUTest
 
-all: argparser.o core.o config.o
+all: iniparser.o argparser.o core.o config.o
+
+iniparser.o: iniparser.cc
+	$(CC) $(CXXFLAGS) $(NOLINK) iniparser.cc -o iniparser.o
 
 argparser.o: argparser.cc
-	$(CC) $(CXXFLAGS) $(NOMAIN) argparser.cc -o argparser.o
+	$(CC) $(CXXFLAGS) $(NOLINK) argparser.cc -o argparser.o
 
 core.o: core.cc
-	$(CC) $(CXXFLAGS) $(NOMAIN) core.cc -o core.o
+	$(CC) $(CXXFLAGS) $(NOLINK) core.cc -o core.o
 
 config.o: config.cc
-	$(CC) $(CXXFLAGS) $(NOMAIN) config.cc -o config.o
+	$(CC) $(CXXFLAGS) $(NOLINK) config.cc -o config.o
 
 clean:
 	@rm -f *.o *.gcno *.gcda
 	@rm -f testrunner
 
 test: all
-	@$(CC) $(CXXFLAGS) argparser.o core.o config.o core_test.cc config_test.cc\
+	@$(CC) $(CXXFLAGS) iniparser.o argparser.o core.o config.o\
+        iniparser_test.cc argparser_test.cc core_test.cc config_test.cc\
         testrunner.cc $(LINK_TEST) -o testrunner
 	@./testrunner
 
 coverage: test
 	@$(eval TEST_COVERAGE=$(shell\
-        gcovr -d -f argparser.cc -f config.cc -f core.cc |\
+        gcovr -d -f iniparser.cc -f argparser.cc -f config.cc -f core.cc |\
         sed -n '/^TOTAL/p' | awk '{ print $$4 }'))
 	@$(eval LOC=$(shell\
         cloc . --include-lang=C++,"C/C++ Header" --not-match-f='test' |\
         sed -n '/^SUM/p' | awk '{ print $$5 }'))
 
 check: clean coverage
-	@echo Test coverage: $(TEST_COVERAGE) , LoC: $(LOC)
+	@echo Test coverage: $(TEST_COVERAGE) \| LoC: $(LOC)
