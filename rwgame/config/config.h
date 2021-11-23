@@ -1,45 +1,133 @@
-#ifndef OPENRW_GAME_CONFIG_H_
-#define OPENRW_GAME_CONFIG_H_
+#ifndef OPENRW_CONFIG_H_
+#define OPENRW_CONFIG_H_
 
 /*
  * OpenRW Configuration
  *
+ * There is a single configuration object held by the Game object. It will
+ * provide configurable values for the whole program. 
  *
+ * Configuration can read game settings from the command line or configuration
+ * file. It provides also hardcoded defaults so that the game is usable even
+ * without any configuration file or command line arguments. 
  *
- *
+ * Configuration also provides an interface where other game components 
+ * (input, render etc.) can provide its options to be configurable by the user.
  */
 
 #include <string>
 #include <memory>
 #include <optional>
 #include <variant>
+#include <vector>
+#include <functional>
 
 namespace orw::cfg {
 
+// Type of configuration option. A single option can be of multiple types and
+// given as bit flags, ie. for an option that can be set in command line and 
+// configuration file, but not in the menu or runtime, the setting would be
+// (kCmdLine | kIniFile)
+enum class OptionType : unsigned int {
+
+    // Option can be set from command line. Command line has a precedence over
+    // config file and default values.
+    kCmdLine = 0x01,
+
+    // Option can be loaded from and saved to an INI-file.
+    kIniFile = 0x02,
+
+    // Option will be modifiable by visual configuration menu.
+    kUsrMenu = 0x04,
+
+    // Option can be set in runtime via game console.
+    kRunTime = 0x08,
+
+    // If set, the option is of boolean value.
+    // If not set, the option will have an argument.
+    kBoolean = 0x10,
+
+    // All of the above. Mostly useful to save space in cases where all
+    // the flags are set.
+    kAll = 0x1f
+
+};
+
+// enum class needs to be casted to integer for the bitwise operations,
+// to work so we need to do some overloading here.
+constexpr OptionType operator|(OptionType a, OptionType b) {
+    return static_cast<OptionType>(
+        static_cast<unsigned int>(a) | static_cast<unsigned int>(b)
+    );
+}
+
+constexpr OptionType operator&(OptionType a, OptionType b) {
+    return static_cast<OptionType>(
+        static_cast<unsigned int>(a) & static_cast<unsigned int>(b)
+    );
+}
+
+// Functions that have a return value will return one of these.
 enum class Result {
     kOk,
     kFail,
     kNoSuchKey
 };
 
-// Just out of the readability we alias the std::variant to simple cfg::Value,
-// that will accept all of the types used in the configuration.
-//
-// Add new types as needed.
+// For the readability we alias the std::variant to ConfigValue, that will
+// accept all of the types used in the configuration.
 using ConfigValue = std::variant<std::string, float, int, bool>;
 
+// We store possible data types in an enum, which will be a parameter of
+// ConfigOption. It can be used to verify that the ConfigValue is of correct
+// data type.
+enum class ValueType : unsigned int {
+    kString,
+    kFloat,
+    kInt,
+    kBool
+};
+
+// Free function to verify that the variant type holds the correct value type. 
+bool VerifyValueType(ConfigValue, ValueType);
+
+// Configurable options. Hardcoded default values provided in [defaults.inc].
+//
+// When the clients register with the Configurator, they provide a list of 
+// these structs to tell about their configurable values. 
+struct ConfigOption {
+    const std::string key;
+    const std::string client_name;
+    const std::string description;
+    const std::vector<std::string> keys;
+    const OptionType option_type;
+    const ValueType value_type;
+    const ConfigValue default_value;
+    ConfigValue current_value;
+};
+
+// Clients can register themselves to Configurator by providing a struct that
+// contain their identification string and a callback function that is called
+// by the Configurator when it receives an update to the option registered by
+// client.
+struct ConfigClient {
+    std::string client_name;
+    std::function<Result(ConfigOption option)> callback;
+};
+
 // We use the "Pimpl idiom" to hide the implementation details, so that there
-// would be less dependencies for clients, and more freedom to develop
+// would be less dependencies for the clients, and more freedom to develop
 // component internals without breaking userspace.
 //
-// Here we forward declare the class to be used in private definitions of 
-// Configurator
+// Here we forward declare the Core class to be used in private definitions of 
+// Configurator. The actual definition used by internal implementation files
+// is found in [core.h]
 class Core;
 
 /*
  * Configurator manages all of the configurable settings of the game.
  *
- * The instance of this class is the first instance created in the program.
+ * The instance of this class is the first instance created in the program run.
  * It takes the command line arguments as constructor parameters and the actual
  * game object is created with a Configurator object as a parameter.
  *
@@ -59,7 +147,13 @@ public:
     ~Configurator();
 
     std::optional<ConfigValue> GetValue(std::string key);
+
     Result SetValue(std::string key, ConfigValue value);
+
+    Result RegisterClient(ConfigClient client,
+                          std::vector<ConfigOption> options);
+
+    Result UnregisterClient(std::string client_name);
 
 private:
 
@@ -69,4 +163,4 @@ private:
 
 } // namespace orw::cfg
 
-#endif // OPENRW_GAME_CONFIG_H_
+#endif // OPENRW_CONFIG_H_

@@ -20,7 +20,7 @@ static std::string GetConfPath(std::optional<ConfigValue> arg_path,
     if (arg_path.has_value())
         return std::get<std::string>(arg_path.value());
     else
-        return std::get<std::string>(defaults.find("game.path")->second);
+        return std::get<std::string>(defaults.find("conf_path")->second);
 
 }
 
@@ -30,7 +30,7 @@ Core::Core(int argc, char **argv) {
 
     ArgParser args(argc, argv);
 
-    std::string conf_path = GetConfPath(args.GetValue("game.path"), data_);
+    std::string conf_path = GetConfPath(args.GetValue("conf_path"), data_);
     
     // IniParser ini(conf_path);
 
@@ -42,6 +42,7 @@ void Core::InsertDefaults() {
 
     data_.insert({"game.path",std::string("$HOME/.local/openrw/data")});
     data_.insert({"input.invert_y", false});
+    data_.insert({"conf_path", std::string("/tmp/openrw.ini")});
 
 }
 
