@@ -17,12 +17,12 @@ Configurator::~Configurator() {
     // and starts complaining if the destructor is missing.
 }
 
-std::optional<ConfigValue> Configurator::GetValue(std::string key) {
+std::optional<ConfigVariant> Configurator::GetValue(std::string key) {
 
     return core_->GetValue(key);
 }
 
-Result Configurator::SetValue(std::string key, ConfigValue value) {
+Result Configurator::SetValue(std::string key, ConfigVariant value) {
     return core_->SetValue(key, value);
 }
 

@@ -10,18 +10,37 @@
 
 namespace orw::cfg {
 
+static std::vector<ConfigOption> InitOptions(void) {
+    return std::vector<ConfigOption>{
+        {.name="data_path",.client_name="game",
+         .description="Location to game data files",
+         .keys=std::vector<std::string>{"data","d"},
+         .option_type=OptionType::kCmdLine | OptionType::kIniFile,
+         .value_type=ValueType::kString,
+         .default_value="$HOME/.local/openrw/data",
+         .current_value="$HOME/.local/openrw/data" },
+        {.name="conf_path",.client_name="game",
+         .description="Location of game configuration file",
+         .keys=std::vector<std::string>{"conf","c"},
+         .option_type=OptionType::kCmdLine,
+         .value_type=ValueType::kString,
+         .default_value="$HOME/.comfig/openrw/openrw.ini",
+         .current_value="$HOME/.config/openrw/openrw.ini"}
+    };
+}
 // TODO: It should be guaranteed that default has the value of game.path,
 // but if for some reason it does not happen, even though it is set in 
 // InsertDefaults(), maybe we should throw runtime exception, or that would
 // just be some extra clutter? 
-static std::string GetConfPath(std::optional<ConfigValue> arg_path,
-                               ConfigMap defaults) {
+static std::string GetConfPath(std::optional<ConfigVariant> arg_path,
+                              std::vector<ConfigOption> data) {
 
     if (arg_path.has_value())
-        return std::get<std::string>(arg_path.value());
-    else
-        return std::get<std::string>(defaults.find("conf_path")->second);
-
+        for (auto it = data.begin(); it != data.end(); ++it)
+            if (it->name == "config_path")
+                it->current_value = arg_path.value();
+   
+    return "";
 }
 
 Core::Core(int argc, char **argv) {
@@ -40,13 +59,13 @@ Core::Core(int argc, char **argv) {
 
 void Core::InsertDefaults() {
 
-    data_.insert({"game.path",std::string("$HOME/.local/openrw/data")});
+    /*data_.insert({"game.path",std::string("$HOME/.local/openrw/data")});
     data_.insert({"input.invert_y", false});
-    data_.insert({"conf_path", std::string("/tmp/openrw.ini")});
+    data_.insert({"conf_path", std::string("/tmp/openrw.ini")});*/
 
 }
 
-std::optional<ConfigValue> Core::GetValue(std::string key) {
+std::optional<ConfigVariant> Core::GetValue(std::string key) {
 
     for (ConfigMap::iterator it = data_.begin(); it != data_.end(); ++it) 
         if (it->first == key)
@@ -56,7 +75,7 @@ std::optional<ConfigValue> Core::GetValue(std::string key) {
 
 }
 
-Result Core::SetValue(std::string key, ConfigValue value) {
+Result Core::SetValue(std::string key, ConfigVariant value) {
 
     ConfigMap::iterator it = data_.find(key);
 

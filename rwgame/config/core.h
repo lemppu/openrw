@@ -10,7 +10,7 @@
 
 namespace orw::cfg {
 
-using ConfigMap = std::map<std::string, ConfigValue>;
+using ConfigMap = std::map<std::string, ConfigVariant>;
 
 // This is here just temporarily to make previous functionality to work fast.
 //
@@ -47,14 +47,14 @@ class Core {
 public:
     Core(int argc, char **argv);
 
-    std::optional<ConfigValue> GetValue(std::string key);
+    std::optional<ConfigVariant> GetValue(std::string key);
 
-    Result SetValue(std::string key, ConfigValue value);
+    Result SetValue(std::string key, ConfigVariant value);
 
 private:
     void InsertDefaults();
-    ConfigMap data_;
-
+    //ConfigMap data_;
+    std::vector<ConfigOption> data_;
 };
 
 } // namespace orw::cfg

@@ -74,12 +74,12 @@ enum class Result {
     kNoSuchKey
 };
 
-// For the readability we alias the std::variant to ConfigValue, that will
+// For the readability we alias the std::variant to ConfigVariant, that will
 // accept all of the types used in the configuration.
-using ConfigValue = std::variant<std::string, float, int, bool>;
+using ConfigVariant = std::variant<std::string, float, int, bool>;
 
 // We store possible data types in an enum, which will be a parameter of
-// ConfigOption. It can be used to verify that the ConfigValue is of correct
+// ConfigOption. It can be used to verify that the ConfigVariant is of correct
 // data type.
 enum class ValueType : unsigned int {
     kString,
@@ -89,21 +89,21 @@ enum class ValueType : unsigned int {
 };
 
 // Free function to verify that the variant type holds the correct value type. 
-bool VerifyValueType(ConfigValue, ValueType);
+bool VerifyValueType(ConfigVariant, ValueType);
 
-// Configurable options. Hardcoded default values provided in [defaults.inc].
+// Configurable options. Hardcoded default values provided in [core.h].
 //
 // When the clients register with the Configurator, they provide a list of 
 // these structs to tell about their configurable values. 
 struct ConfigOption {
-    const std::string key;
+    const std::string name;
     const std::string client_name;
     const std::string description;
     const std::vector<std::string> keys;
     const OptionType option_type;
     const ValueType value_type;
-    const ConfigValue default_value;
-    ConfigValue current_value;
+    const ConfigVariant default_value;
+    ConfigVariant current_value;
 };
 
 // Clients can register themselves to Configurator by providing a struct that
@@ -146,9 +146,9 @@ public:
     Configurator(int argc, char **argv);
     ~Configurator();
 
-    std::optional<ConfigValue> GetValue(std::string key);
+    std::optional<ConfigVariant> GetValue(std::string key);
 
-    Result SetValue(std::string key, ConfigValue value);
+    Result SetValue(std::string key, ConfigVariant value);
 
     Result RegisterClient(ConfigClient client,
                           std::vector<ConfigOption> options);
