@@ -11,7 +11,7 @@ class ArgParser {
 public:
     ArgParser(int argc, char **argv);
 
-    std::optional<ConfigValue> GetValue(std::string key);
+    std::optional<ConfigVariant> GetValue(std::string key);
 
     ConfigMap GetAllValues();
 

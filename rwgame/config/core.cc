@@ -25,64 +25,93 @@ static std::vector<ConfigOption> InitOptions(void) {
          .option_type=OptionType::kCmdLine,
          .value_type=ValueType::kString,
          .default_value="$HOME/.comfig/openrw/openrw.ini",
-         .current_value="$HOME/.config/openrw/openrw.ini"}
+         .current_value="$HOME/.config/openrw/openrw.ini"},
+        {.name="no_config",.client_name="game",
+         .description="Skip the loading of comfig file",
+         .keys=std::vector<std::string>{"noconf","nc"},
+         .option_type=OptionType::kCmdLine,
+         .value_type=ValueType::kBool,
+         .default_value=false,
+         .current_value=false}
     };
 }
-// TODO: It should be guaranteed that default has the value of game.path,
-// but if for some reason it does not happen, even though it is set in 
-// InsertDefaults(), maybe we should throw runtime exception, or that would
-// just be some extra clutter? 
-static std::string GetConfPath(std::optional<ConfigVariant> arg_path,
-                              std::vector<ConfigOption> data) {
 
-    if (arg_path.has_value())
-        for (auto it = data.begin(); it != data.end(); ++it)
-            if (it->name == "config_path")
-                it->current_value = arg_path.value();
-   
-    return "";
+// Free function, make public if needed.
+static std::optional<ConfigOption> GetOption(std::vector<ConfigOption> data,
+                                             std::string option_name) {
+
+    for (auto it = data.begin(); it != data.end(); ++it) 
+        if (it->name == option_name) 
+            return {*it};
+
+    return {};
+
+}
+
+static bool NoConfigSet(std::vector<ConfigOption> data) {
+
+    std::optional<ConfigOption> noconf_opt = GetOption(data, "no_config");
+
+    return (noconf_opt.has_value()) 
+           ? std::get<bool>(noconf_opt.value().current_value)
+           : false;
+
+}
+
+static std::string GetConfPath(std::vector<ConfigOption> data) {
+    
+    std::optional<ConfigOption> conf_path = GetOption(data, "conf_path");
+
+    return (conf_path.has_value())
+           ? std::get<std::string>(conf_path.value().current_value)
+           : "";
+
 }
 
 Core::Core(int argc, char **argv) {
 
-    this->InsertDefaults();
+    data_ = InitOptions();
 
     ArgParser args(argc, argv);
 
-    std::string conf_path = GetConfPath(args.GetValue("conf_path"), data_);
+    // data_ = MergeOptions(args.GetConfig());
+
+    if (NoConfigSet(data_))
+        return;        
+
+    std::string conf_path = GetConfPath(data_);
     
+    if (conf_path.empty())
+        return;
+
     // IniParser ini(conf_path);
 
     // data_ = MergeConfig(ini,data_);
     // data_ = MergeConfig(args,data_);
 }
 
-void Core::InsertDefaults() {
-
-    /*data_.insert({"game.path",std::string("$HOME/.local/openrw/data")});
-    data_.insert({"input.invert_y", false});
-    data_.insert({"conf_path", std::string("/tmp/openrw.ini")});*/
-
-}
-
 std::optional<ConfigVariant> Core::GetValue(std::string key) {
 
-    for (ConfigMap::iterator it = data_.begin(); it != data_.end(); ++it) 
-        if (it->first == key)
-            return {it->second};
+    for (auto it = data_.begin(); it != data_.end(); ++it) 
+        if (it->name == key)
+            return {it->current_value};
     
     return {};
 
 }
 
-Result Core::SetValue(std::string key, ConfigVariant value) {
 
-    ConfigMap::iterator it = data_.find(key);
+Result Core::SetValue(std::string name, ConfigVariant value) {
 
-    if (it != data_.end())
-        it->second = value;
-    else
-        data_.insert({key, value});
+    std::optional<ConfigOption> option = GetOption(data_, name);
+
+    if (option.has_value() == false)
+        return Result::kNoSuchOption;
+
+    if (VerifyValueType(value, option.value().value_type) == false)
+        return Result::kInvalidValueType;
+        
+    option.value().current_value = value;
 
     return Result::kOk;
 

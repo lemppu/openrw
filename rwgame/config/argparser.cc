@@ -39,19 +39,19 @@ static std::optional<int> StrToInt(const char *arg) {
 }
 // The value of the argument can be any in std::variant, so we
 // deduct the correct type our of the c-string here.
-static ConfigValue GetConfigValue(const char* arg) {
+static ConfigVariant GetConfigVariant(const char* arg) {
 
     std::optional<float> val_fl = StrToFloat(arg);
 
     if (val_fl.has_value())
-        return ConfigValue(val_fl.value());
+        return ConfigVariant(val_fl.value());
 
     std::optional<int> val_i = StrToInt(arg);
 
     if (val_i.has_value())
-        return ConfigValue(val_i.value());
+        return ConfigVariant(val_i.value());
 
-    return ConfigValue(std::string(arg));
+    return ConfigVariant(std::string(arg));
 
 }
 
@@ -64,9 +64,10 @@ static bool KeyHasAnArgument(int argc, char **argv, int i) {
 // NOTE: The boolean check of comparing bitmask to Type::kNone was done just
 // because I couldn't make the bitmask itself as bool expression. That's now
 // an excercise.
-static std::string GetKey(std::string arg) {
+static std::string GetKey([[maybe_unused]]std::string arg) {
     
-    if (arg.front() != '-')
+    return "";
+    /*if (arg.front() != '-')
         return std::string("");
 
     arg.erase(0,1);
@@ -76,7 +77,7 @@ static std::string GetKey(std::string arg) {
             static_cast<unsigned int>(it->second & OptionType::kCmdLine)) 
                 return arg;
 
-    return std::string(""); 
+    return std::string(""); */
 }
 
 static bool IsValidValue([[maybe_unused]] std::string key, [[maybe_unused]]const char *arg) {
@@ -96,17 +97,17 @@ ArgParser::ArgParser(int argc, char **argv) {
 
         if (KeyHasAnArgument(argc, argv, i)) {
             if (IsValidValue(key, argv[i+1]))
-                data_.insert({argv[i], GetConfigValue(argv[i+1])});
+                data_.insert({argv[i], GetConfigVariant(argv[i+1])});
 
             i++;
         } else {
-            data_.insert({argv[i], ConfigValue(true)});
+            data_.insert({argv[i], ConfigVariant(true)});
         }
 
     }
 }
 
-std::optional<ConfigValue> ArgParser::GetValue(std::string key) {
+std::optional<ConfigVariant> ArgParser::GetValue(std::string key) {
 
     for (ConfigMap::iterator it = data_.begin(); it != data_.end(); ++it)
         if (it->first == key)

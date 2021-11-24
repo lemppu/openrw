@@ -71,7 +71,9 @@ constexpr OptionType operator&(OptionType a, OptionType b) {
 enum class Result {
     kOk,
     kFail,
-    kNoSuchKey
+    kNoSuchKey,
+    kNoSuchOption,
+    kInvalidValueType
 };
 
 // For the readability we alias the std::variant to ConfigVariant, that will
