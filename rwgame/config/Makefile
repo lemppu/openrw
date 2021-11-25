@@ -1,6 +1,6 @@
 CC = /usr/bin/c++
 
-CXXFLAGS = -g -std=c++17\
+CXXFLAGS = -g -std=c++20\
            -Wall -Werror -Wpedantic -Wdouble-promotion\
            -Wextra\
            --coverage

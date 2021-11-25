@@ -28,7 +28,12 @@ namespace orw::cfg {
 // given as bit flags, ie. for an option that can be set in command line and 
 // configuration file, but not in the menu or runtime, the setting would be
 // (kCmdLine | kIniFile)
-enum class OptionType : unsigned int {
+//
+// We use classic enum instead of enum class to get implicit int for bitwise
+// operations. This is also why we put it in a separate namespace to get
+// a feel of scoping and avoid pollution.
+namespace type {
+enum Option{
 
     // Option can be set from command line. Command line has a precedence over
     // config file and default values.
@@ -45,26 +50,13 @@ enum class OptionType : unsigned int {
 
     // If set, the option is of boolean value.
     // If not set, the option will have an argument.
-    kBoolean = 0x10,
+    kBool = 0x10,
 
     // All of the above. Mostly useful to save space in cases where all
     // the flags are set.
     kAll = 0x1f
 
 };
-
-// enum class needs to be casted to integer for the bitwise operations,
-// to work so we need to do some overloading here.
-constexpr OptionType operator|(OptionType a, OptionType b) {
-    return static_cast<OptionType>(
-        static_cast<unsigned int>(a) | static_cast<unsigned int>(b)
-    );
-}
-
-constexpr OptionType operator&(OptionType a, OptionType b) {
-    return static_cast<OptionType>(
-        static_cast<unsigned int>(a) & static_cast<unsigned int>(b)
-    );
 }
 
 // Functions that have a return value will return one of these.
