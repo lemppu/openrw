@@ -31,9 +31,9 @@ namespace orw::cfg {
 //
 // We use classic enum instead of enum class to get implicit int for bitwise
 // operations. This is also why we put it in a separate namespace to get
-// a feel of scoping and avoid pollution.
+// a feel of scoping and avoid namespace pollution.
 namespace type {
-enum Option{
+enum Option {
 
     // Option can be set from command line. Command line has a precedence over
     // config file and default values.
@@ -65,7 +65,8 @@ enum class Result {
     kFail,
     kNoSuchKey,
     kNoSuchOption,
-    kInvalidValueType
+    kInvalidValueType,
+    kClientAlreadyRegistered
 };
 
 // For the readability we alias the std::variant to ConfigVariant, that will
@@ -83,7 +84,7 @@ enum class ValueType : unsigned int {
 };
 
 // Free function to verify that the variant type holds the correct value type. 
-bool VerifyValueType(ConfigVariant, ValueType);
+bool VerifyValueType(ConfigVariant variant, ValueType type);
 
 // Configurable options. Hardcoded default values provided in [core.h].
 //
@@ -94,7 +95,7 @@ struct ConfigOption {
     const std::string client_name;
     const std::string description;
     const std::vector<std::string> keys;
-    const OptionType option_type;
+    const int option_type;
     const ValueType value_type;
     const ConfigVariant default_value;
     ConfigVariant current_value;

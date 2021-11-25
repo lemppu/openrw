@@ -21,6 +21,9 @@ public:
 
     Result SetValue(std::string key, ConfigVariant value);
 
+    Result RegisterClient(ConfigClient client, 
+                          std::vector<ConfigOption> options);
+
 private:
     std::vector<ConfigOption> data_;
 };

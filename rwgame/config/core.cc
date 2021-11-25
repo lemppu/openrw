@@ -7,6 +7,7 @@
 #include <optional>
 #include <memory>
 #include <variant>
+#include <vector>
 
 namespace orw::cfg {
 
@@ -15,21 +16,21 @@ static std::vector<ConfigOption> InitOptions(void) {
         {.name="data_path",.client_name="game",
          .description="Location to game data files",
          .keys=std::vector<std::string>{"data","d"},
-         .option_type=OptionType::kCmdLine | OptionType::kIniFile,
+         .option_type=type::kCmdLine | type::kIniFile,
          .value_type=ValueType::kString,
          .default_value="$HOME/.local/openrw/data",
          .current_value="$HOME/.local/openrw/data" },
         {.name="conf_path",.client_name="game",
          .description="Location of game configuration file",
          .keys=std::vector<std::string>{"conf","c"},
-         .option_type=OptionType::kCmdLine,
+         .option_type=type::kCmdLine,
          .value_type=ValueType::kString,
          .default_value="$HOME/.comfig/openrw/openrw.ini",
          .current_value="$HOME/.config/openrw/openrw.ini"},
         {.name="no_config",.client_name="game",
          .description="Skip the loading of comfig file",
          .keys=std::vector<std::string>{"noconf","nc"},
-         .option_type=OptionType::kCmdLine,
+         .option_type=type::kCmdLine,
          .value_type=ValueType::kBool,
          .default_value=false,
          .current_value=false}
@@ -116,5 +117,11 @@ Result Core::SetValue(std::string name, ConfigVariant value) {
     return Result::kOk;
 
 }
+
+Result Core::RegisterClient([[maybe_unused]]ConfigClient client,
+                            [[maybe_unused]]std::vector<ConfigOption> options) {
+    return Result::kOk;
+}
+
 
 } // namespace orw::cfg

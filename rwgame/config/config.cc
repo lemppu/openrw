@@ -8,6 +8,10 @@
 
 namespace orw::cfg {
 
+bool VerifyValueType([[maybe_unused]]ConfigVariant variant, [[maybe_unused]]ValueType type) {
+    return true;
+}
+
 Configurator::Configurator(int argc, char **argv) {
     core_ = std::unique_ptr<Core>(new Core(argc,argv));
 }
@@ -24,6 +28,11 @@ std::optional<ConfigVariant> Configurator::GetValue(std::string key) {
 
 Result Configurator::SetValue(std::string key, ConfigVariant value) {
     return core_->SetValue(key, value);
+}
+
+Result Configurator::RegisterClient(ConfigClient client,
+                                    std::vector<ConfigOption> options) {
+    return core_->RegisterClient(client, options);
 }
 
 } // namespace orw

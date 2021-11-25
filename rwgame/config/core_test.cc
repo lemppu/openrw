@@ -25,17 +25,17 @@ TEST(CoreDefaults, FailTest) {
    
 }
 
-TEST(CoreDefaults, SetValue) {
+IGNORE_TEST(CoreDefaults, SetValue) {
 
     cfg::Result res = core->SetValue("testkey", 123);
 
     CHECK(res == cfg::Result::kOk);
-    CHECK(core->GetValue("testkey") == cfg::ConfigValue(123));
+    CHECK(core->GetValue("testkey") == cfg::ConfigVariant(123));
 
     res = core->SetValue("testkey", 456);
 
     CHECK(res == cfg::Result::kOk);
-    CHECK(core->GetValue("testkey") == cfg::ConfigValue(456));
+    CHECK(core->GetValue("testkey") == cfg::ConfigVariant(456));
 
 }
 
