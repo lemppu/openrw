@@ -10,7 +10,7 @@ namespace orw {
 static cfg::Configurator *config;
 
 static cfg::ConfigOption simpleValidTestOption = {
-             .name="test_option",.client_name="test_client",
+             .name="test_option",.component_name="test_component",
              .description="Test option",
              .keys=std::vector<std::string>{"-test"},
              .option_type=cfg::type::kAll,
@@ -19,9 +19,29 @@ static cfg::ConfigOption simpleValidTestOption = {
              .current_value="rest value"
 }; 
 
+static cfg::ConfigOption simpleValidTestOptionInt = {
+             .name="test_int",.component_name="test_component",
+             .description="Test integer option",
+             .keys=std::vector<std::string>{"-int"},
+             .option_type=cfg::type::kCmdLine,
+             .value_type=cfg::ValueType::kInt,
+             .default_value=123,
+             .current_value=123
+}; 
+
+static bool callback_called = false;
+
 cfg::Result TestCallback([[maybe_unused]]cfg::ConfigOption option) {
+
+    callback_called = true;
+
     return cfg::Result::kOk;
+
 }
+
+static cfg::ConfigClient test_client = {
+    .client_name = "test_component", .callback=TestCallback
+};
 
 TEST_GROUP(ConfigDefaults) {
 
@@ -41,21 +61,51 @@ TEST_GROUP(ConfigDefaults) {
 TEST(ConfigDefaults, RegisterClientSuccess) {
     
     cfg::Result res = config->RegisterClient(
-        cfg::ConfigClient{
-            .client_name = "test_client", .callback=TestCallback
-        },
+        test_client,
         std::vector<cfg::ConfigOption>{ simpleValidTestOption }
     );
 
     CHECK(res == cfg::Result::kOk);
 }
 
-IGNORE_TEST(ConfigDefaults, RegisterClientFail) {
+TEST(ConfigDefaults, RegisterClientFail) {
+
+    cfg::Result res = config->RegisterClient(
+        test_client,
+        std::vector<cfg::ConfigOption>{ simpleValidTestOption }
+    );
+
+    CHECK(res == cfg::Result::kOk);
+
+    res = config->RegisterClient(
+        test_client,
+        std::vector<cfg::ConfigOption>{ simpleValidTestOption }
+    );
+
+    CHECK(res == cfg::Result::kComponentAlreadyRegistered);
 }
 
-IGNORE_TEST(ConfigDefaults, DataPathValid) {
+TEST(ConfigDefaults, TestCallback) {
 
-    std::optional<cfg::ConfigVariant> dataPath = config->GetValue("game.path");
+    cfg::Result res = config->RegisterClient(
+        test_client,
+        std::vector<cfg::ConfigOption>{ simpleValidTestOption }
+    ); 
+
+    CHECK(res == cfg::Result::kOk);
+
+    callback_called = false;
+
+    config->SetValue("test_component", "test_option", "new value");
+
+    CHECK_TRUE(callback_called);
+
+}
+
+TEST(ConfigDefaults, DataPathValid) {
+
+    std::optional<cfg::ConfigVariant> dataPath;
+    dataPath = config->GetValue("game","data_path");
 
     CHECK(dataPath.has_value());
     std::string ref_value = std::string("$HOME/.local/openrw/data");
@@ -63,9 +113,9 @@ IGNORE_TEST(ConfigDefaults, DataPathValid) {
 
 }
 
-IGNORE_TEST(ConfigDefaults, ValueReadInvalidType) {
+TEST(ConfigDefaults, ValueReadInvalidType) {
 
-    std::optional<cfg::ConfigVariant> ret = config->GetValue("game.path");
+    std::optional<cfg::ConfigVariant> ret = config->GetValue("game","data_path");
     CHECK(ret.has_value());
 
     CHECK(std::get_if<int>(&(ret.value())) == nullptr);
@@ -73,34 +123,43 @@ IGNORE_TEST(ConfigDefaults, ValueReadInvalidType) {
 
 }
 
-IGNORE_TEST(ConfigDefaults, GetValueInvalidKey) {
+TEST(ConfigDefaults, GetValueInvalidKey) {
 
-    std::optional<cfg::ConfigVariant> ret = config->GetValue("key_not_exist");
+    std::optional<cfg::ConfigVariant> ret;
+    ret = config->GetValue("fake","key");
 
     CHECK(ret.has_value() == false);
 
 }
 
-IGNORE_TEST(ConfigDefaults, InvertMouseValid) {
+TEST(ConfigDefaults, InvertMouseValid) {
     
-    std::optional<cfg::ConfigVariant> option = config->GetValue("input.invert_y");
+    std::optional<cfg::ConfigVariant> option;
+    option = config->GetValue("input","invert_y");
 
     CHECK(option.has_value());
     CHECK(option.value() == cfg::ConfigVariant(false));
     
 }
 
-IGNORE_TEST(ConfigDefaults, SetValue) {
+TEST(ConfigDefaults, SetValueSuccess) {
 
-    cfg::Result res = config->SetValue("testkey", 123);
+    std::string path1 = "/usr/share/games/openrw/openrw.ini";
+    std::string path2 = "/etc/openrw/openrw.ini";
+
+    cfg::Result res = config->SetValue(
+        "game",
+        "data_path", 
+        path1
+    );
 
     CHECK(res == cfg::Result::kOk);
-    CHECK(config->GetValue("testkey") == cfg::ConfigVariant(123));
+    CHECK(config->GetValue("game", "data_path").value() == cfg::ConfigVariant(path1));
 
-    res = config->SetValue("testkey", 456);
+    res = config->SetValue("game", "data_path",  path2);
 
     CHECK(res == cfg::Result::kOk);
-    CHECK(config->GetValue("testkey") == cfg::ConfigVariant(456));
+    CHECK(config->GetValue("game","data_path") == cfg::ConfigVariant(path2));
 
 }
 

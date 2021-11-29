@@ -33,7 +33,7 @@ namespace orw::cfg {
 // operations. This is also why we put it in a separate namespace to get
 // a feel of scoping and avoid namespace pollution.
 namespace type {
-enum Option {
+enum {
 
     // Option can be set from command line. Command line has a precedence over
     // config file and default values.
@@ -66,7 +66,8 @@ enum class Result {
     kNoSuchKey,
     kNoSuchOption,
     kInvalidValueType,
-    kClientAlreadyRegistered
+    kComponentAlreadyRegistered,
+    kNoSuchComponent
 };
 
 // For the readability we alias the std::variant to ConfigVariant, that will
@@ -88,11 +89,11 @@ bool VerifyValueType(ConfigVariant variant, ValueType type);
 
 // Configurable options. Hardcoded default values provided in [core.h].
 //
-// When the clients register with the Configurator, they provide a list of 
+// When the client components register with the Configurator, they provide a list of 
 // these structs to tell about their configurable values. 
 struct ConfigOption {
     const std::string name;
-    const std::string client_name;
+    const std::string component_name;
     const std::string description;
     const std::vector<std::string> keys;
     const int option_type;
@@ -100,6 +101,7 @@ struct ConfigOption {
     const ConfigVariant default_value;
     ConfigVariant current_value;
 };
+
 
 // Clients can register themselves to Configurator by providing a struct that
 // contain their identification string and a callback function that is called
@@ -141,9 +143,12 @@ public:
     Configurator(int argc, char **argv);
     ~Configurator();
 
-    std::optional<ConfigVariant> GetValue(std::string key);
+    std::optional<ConfigVariant> GetValue(std::string component,
+                                          std::string name);
 
-    Result SetValue(std::string key, ConfigVariant value);
+    Result SetValue(std::string component,
+                    std::string name, 
+                    ConfigVariant value);
 
     Result RegisterClient(ConfigClient client,
                           std::vector<ConfigOption> options);

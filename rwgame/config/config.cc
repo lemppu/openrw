@@ -21,13 +21,18 @@ Configurator::~Configurator() {
     // and starts complaining if the destructor is missing.
 }
 
-std::optional<ConfigVariant> Configurator::GetValue(std::string key) {
+std::optional<ConfigVariant> Configurator::GetValue(std::string component,
+                                                    std::string name) {
 
-    return core_->GetValue(key);
+    return core_->GetValue(component, name);
 }
 
-Result Configurator::SetValue(std::string key, ConfigVariant value) {
-    return core_->SetValue(key, value);
+Result Configurator::SetValue(std::string component,
+                              std::string name,
+                              ConfigVariant value) {
+
+    return core_->SetValue(component, name, value);
+
 }
 
 Result Configurator::RegisterClient(ConfigClient client,

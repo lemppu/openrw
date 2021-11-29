@@ -25,19 +25,22 @@ TEST(CoreDefaults, FailTest) {
    
 }
 
-IGNORE_TEST(CoreDefaults, SetValue) {
+TEST(CoreDefaults, SetValue) {
 
-    cfg::Result res = core->SetValue("testkey", 123);
+    std::string path1 = "/usr/share/games/openrw/data";
+    std::string path2 = "/opt/openrw/data";
+
+    cfg::Result res = core->SetValue(
+        "game", "data_path", path1);
 
     CHECK(res == cfg::Result::kOk);
-    CHECK(core->GetValue("testkey") == cfg::ConfigVariant(123));
+    CHECK(core->GetValue("game","data_path") == cfg::ConfigVariant(path1));
 
-    res = core->SetValue("testkey", 456);
+    res = core->SetValue("game", "data_path", path2);
 
     CHECK(res == cfg::Result::kOk);
-    CHECK(core->GetValue("testkey") == cfg::ConfigVariant(456));
+    CHECK(core->GetValue("game","data_path") == cfg::ConfigVariant(path2));
 
 }
-
 
 } // namespace orw

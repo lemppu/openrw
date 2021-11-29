@@ -17,15 +17,22 @@ class Core {
 public:
     Core(int argc, char **argv);
 
-    std::optional<ConfigVariant> GetValue(std::string key);
+    std::optional<ConfigVariant> GetValue(std::string component,
+                                          std::string key);
 
-    Result SetValue(std::string key, ConfigVariant value);
+    Result SetValue(std::string component,
+                    std::string name, 
+                    ConfigVariant value);
 
     Result RegisterClient(ConfigClient client, 
                           std::vector<ConfigOption> options);
 
 private:
+    std::optional<ConfigClient> GetClient(std::string component);
+
     std::vector<ConfigOption> data_;
+    std::vector<ConfigClient> clients_;
+
 };
 
 } // namespace orw::cfg

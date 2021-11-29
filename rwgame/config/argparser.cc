@@ -1,3 +1,25 @@
+/*
+ * ArgParser is a class that collects command line arguments into an internal
+ * vector. 
+ *
+ * After this, the Core class of the configurator will take the arguments into
+ * ConfigOption structs as needed. 
+ *
+ * This means that the ArgParser does not validate the content of the arguments.
+ * 
+ * It will only validate the form as such, that the argument will need to
+ * start with dash (-), and if it does not contain an argument for the argument
+ * the argument type is implicitly considered to be a boolean with a value of
+ * true. 
+ *
+ * The validation of the content should be done by the caller that has the 
+ * information about valid arguments and their types. 
+ *
+ * After all of the components of the program are loaded, the Configurator can
+ * check whether there are any unused, that is, invalid arguments and then
+ * act accordingly.
+ */
+
 #include "argparser.h"
 #include "config.h"
 #include "core.h"
@@ -41,15 +63,15 @@ static std::optional<int> StrToInt(const char *arg) {
 // deduct the correct type our of the c-string here.
 static ConfigVariant GetConfigVariant(const char* arg) {
 
-    std::optional<float> val_fl = StrToFloat(arg);
-
-    if (val_fl.has_value())
-        return ConfigVariant(val_fl.value());
-
     std::optional<int> val_i = StrToInt(arg);
 
     if (val_i.has_value())
         return ConfigVariant(val_i.value());
+
+    std::optional<float> val_fl = StrToFloat(arg);
+
+    if (val_fl.has_value())
+        return ConfigVariant(val_fl.value());
 
     return ConfigVariant(std::string(arg));
 
@@ -64,25 +86,16 @@ static bool KeyHasAnArgument(int argc, char **argv, int i) {
 // NOTE: The boolean check of comparing bitmask to Type::kNone was done just
 // because I couldn't make the bitmask itself as bool expression. That's now
 // an excercise.
-static std::string GetKey([[maybe_unused]]std::string arg) {
+static std::string GetKey(char *arg) {
     
-    return "";
-    /*if (arg.front() != '-')
+    std::string key(arg);
+    if (key.front() != '-')
         return std::string("");
 
-    arg.erase(0,1);
+    key.erase(0,1);
 
-    for (auto it = kValidOptions.begin(); it != kValidOptions.end(); ++it)
-        if (it->first == arg &&
-            static_cast<unsigned int>(it->second & OptionType::kCmdLine)) 
-                return arg;
-
-    return std::string(""); */
+    return key;
 }
-
-static bool IsValidValue([[maybe_unused]] std::string key, [[maybe_unused]]const char *arg) {
-    return true;
-} 
 
 ArgParser::ArgParser(int argc, char **argv) {
 
@@ -91,17 +104,16 @@ ArgParser::ArgParser(int argc, char **argv) {
 
     for (int i = 1; i < argc; ++i) {
 
-        std::string key = GetKey(std::string(argv[i])); 
+        std::string key = GetKey(argv[i]); 
         if (key.empty())
             continue;
 
         if (KeyHasAnArgument(argc, argv, i)) {
-            if (IsValidValue(key, argv[i+1]))
-                data_.insert({argv[i], GetConfigVariant(argv[i+1])});
+            data_.insert({key, GetConfigVariant(argv[i+1])});
 
             i++;
         } else {
-            data_.insert({argv[i], ConfigVariant(true)});
+            data_.insert({key, ConfigVariant(true)});
         }
 
     }
@@ -114,6 +126,13 @@ std::optional<ConfigVariant> ArgParser::GetValue(std::string key) {
             return {it->second};
 
     return {};
+
+}
+
+ConfigMap ArgParser::GetAllData(void) {
+    
+    return data_;
+
 }
 
 } // namespace orw::cfg

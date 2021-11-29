@@ -13,7 +13,7 @@ public:
 
     std::optional<ConfigVariant> GetValue(std::string key);
 
-    ConfigMap GetAllValues();
+    ConfigMap GetAllData();
 
 private:
     ConfigMap data_;
