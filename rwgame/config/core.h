@@ -3,6 +3,10 @@
 
 #include "config.h"
 
+// TODO: Change this into an interface parser.h, valid 
+// for both argparser and iniparser
+#include "argparser.h"
+
 #include <optional>
 #include <string>
 #include <map>
@@ -11,6 +15,8 @@
 namespace orw::cfg {
 
 using ConfigMap = std::map<std::string, ConfigVariant>;
+
+class ArgParser;
 
 class Core {
 
@@ -29,6 +35,7 @@ public:
 
 private:
     std::optional<ConfigClient> GetClient(std::string component);
+    void MergeOptions(ArgParser *args);
 
     std::vector<ConfigOption> data_;
     std::vector<ConfigClient> clients_;

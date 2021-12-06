@@ -83,9 +83,9 @@ TEST_GROUP(ArgParserInvalidInput) {
 
 };
 
-TEST(ArgParserNoValues, CheckNoValues) {
-   CHECK(parser->GetAllData().size() == 0); 
-}
+//TEST(ArgParserNoValues, CheckNoValues) {
+//   CHECK(parser->GetAllData().size() == 0); 
+//}
 
 TEST(ArgParserAllValues, CheckAllValues) {
     CHECK(parser->GetValue("w") == cfg::ConfigVariant(900));

@@ -4,6 +4,8 @@
 #include "config.h"
 #include "core.h"
 
+#include <map>
+
 namespace orw::cfg {
 
 class ArgParser {
@@ -13,10 +15,8 @@ public:
 
     std::optional<ConfigVariant> GetValue(std::string key);
 
-    ConfigMap GetAllData();
-
 private:
-    ConfigMap data_;
+    std::map<std::string, ConfigVariant> data_;
 
 };
 

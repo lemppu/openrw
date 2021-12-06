@@ -50,8 +50,8 @@ static std::optional<ConfigOption> GetOption(std::vector<ConfigOption> data,
                                              std::string component,
                                              std::string option_name) {
 
-    for (auto it = data.begin(); it != data.end(); ++it) 
-        if (it->component_name == component  && it->name == option_name) 
+    for (auto it = data.begin(); it != data.end(); ++it)
+        if (it->component_name == component  && it->name == option_name)
             return {*it};
 
     return {};
@@ -63,14 +63,14 @@ static bool NoConfigSet(std::vector<ConfigOption> data) {
     std::optional<ConfigOption> noconf_opt = GetOption(data, "game",
                                                        "no_config");
 
-    return (noconf_opt.has_value()) 
+    return (noconf_opt.has_value())
            ? std::get<bool>(noconf_opt.value().current_value)
            : false;
 
 }
 
 static std::string GetConfPath(std::vector<ConfigOption> data) {
-    
+
     std::optional<ConfigOption> conf_path = GetOption(data, "game",
                                                       "conf_path");
 
@@ -86,15 +86,12 @@ Core::Core(int argc, char **argv) {
 
     ArgParser args(argc, argv);
 
-    // data_ = MergeOptions(args.GetConfig());
+    MergeOptions(&args);
 
     if (NoConfigSet(data_))
-        return;        
+        return;
 
     std::string conf_path = GetConfPath(data_);
-    
-    if (conf_path.empty())
-        return;
 
     // IniParser ini(conf_path);
 
@@ -102,20 +99,50 @@ Core::Core(int argc, char **argv) {
     // data_ = MergeConfig(args,data_);
 }
 
+// Argument parser has given options only as a ConfigMap key/value pair.
+//
+// To get those values into registered ConfigOptions, we have to call a merge
+// function, that goes through registered options and checks whether there are
+// options for them.
+//
+// This happens by looping through registered ConfigOptions and change their
+// current_value to one found from argument parser, if any.
+void Core::MergeOptions(ArgParser *args) {
+
+    for (auto it = data_.begin(); it != data_.end(); ++it) {
+
+        for (auto key = it->keys.begin(); key != it->keys.end(); ++key) {
+
+            auto argValue = args->GetValue(*key);
+
+            if (argValue.has_value()) {
+
+                it->current_value = argValue.value();
+
+                return;
+            }
+        }
+
+    }
+}
+
 std::optional<ConfigVariant> Core::GetValue(std::string component,
                                             std::string name) {
 
-    for (auto it = data_.begin(); it != data_.end(); ++it) 
-        if (it->component_name == component && it->name == name)
-            return {it->current_value};
-    
-    return {};
+    std::optional<ConfigOption> option = GetOption(data_, component, name);
+
+    if (option.has_value())
+        return {option.value().current_value};
+    else
+        return {};
 
 }
 
-static bool OptionMatch(ConfigOption option, std::string component, 
+static bool OptionMatch(ConfigOption option, std::string component,
                         std::string name) {
+
     return (option.component_name == component && option.name == name);
+
 }
 
 std::optional<ConfigClient> Core::GetClient(std::string component) {
@@ -123,7 +150,7 @@ std::optional<ConfigClient> Core::GetClient(std::string component) {
     for (auto it = clients_.begin(); it != clients_.end(); ++it)
         if (it->client_name == component)
             return {*it};
- 
+
     return {};
 }
 
@@ -133,20 +160,19 @@ Result Core::SetValue(std::string component, std::string name,
     for (auto it = data_.begin(); it != data_.end(); ++it) {
 
         if (OptionMatch(*it, component, name) == false)
-            continue; 
-             
+            continue;
+
         if (VerifyValueType(value, it->value_type) == false)
             return Result::kInvalidValueType;
 
         it->current_value = value;
 
-        auto client = GetClient(component); 
-
+        auto client = GetClient(component);
         if (client.has_value())
             client.value().callback(*it);
 
         return Result::kOk;
-        
+
     }
 
     return Result::kNoSuchOption;

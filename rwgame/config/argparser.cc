@@ -129,10 +129,4 @@ std::optional<ConfigVariant> ArgParser::GetValue(std::string key) {
 
 }
 
-ConfigMap ArgParser::GetAllData(void) {
-    
-    return data_;
-
-}
-
 } // namespace orw::cfg
